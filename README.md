@@ -21,6 +21,8 @@ Then open your browser on `http://localhost:8080`, upload your OTF/TTF font file
 
 ## Development
 
+Required: PHP 7.1+
+
 Clone this repository, then:
 
 ```bash
