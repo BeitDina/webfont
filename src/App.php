@@ -71,7 +71,8 @@ class App
         $vendorDirectory = realpath(__DIR__.'/../vendor');
         $vendorFormDirectory = $vendorDirectory.'/symfony/form';
         $vendorValidatorDirectory = $vendorDirectory.'/symfony/validator';
-        $translator = new Translator('en');
+        //die($_SERVER['HTTP_ACCEPT_LANGUAGE']);
+		$translator = new Translator('en');
         $translator->addLoader('xlf', new XliffFileLoader());
         $this->getTwig()->addExtension(new TranslationExtension($translator));
         $validator = Validation::createValidatorBuilder()
@@ -110,7 +111,7 @@ class App
 		{
             $formFactory = $this->createFormFactory();
             $form = $formFactory->createNamed('fonts', FontType::class, [
-                'subset_latin' => true,
+                'subset_latin'	=> false,
                 'subset_ranges' => PythonFontSubset::getBaseSet()
             ]);
             $form->handleRequest($request);

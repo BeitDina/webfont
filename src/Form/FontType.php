@@ -37,6 +37,11 @@ class FontType extends AbstractType
                                     'application/x-font-ttf',
                                     'application/vnd.ms-opentype',
 									'image/svg+xml',
+                                    'application/x-font-eot',
+                                    'application/x-font-woff',
+                                    'application/x-font-woff2',
+									'application/octet-stream',
+									'application/vnd.ms-fontobject',
                                 ]
                             ])
                         ]
@@ -51,7 +56,7 @@ class FontType extends AbstractType
             ])
             ->add('subset_ranges', ChoiceType::class, [
                 'label' => 'Subset ranges',
-                'help' => 'Choose your Unicode ranges (http://jrgraphix.net/research/unicode.php).',
+                'help' => 'Choose your Unicode ranges (http://www.unicode.org/charts/index.html).',
                 'choices' => PythonFontSubset::$ranges,
                 'multiple' => true,
                 'expanded' => true,

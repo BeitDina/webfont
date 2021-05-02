@@ -1,0 +1,9 @@
+#!/usr/local/bin/fontforge
+
+# Usage :
+# ./merge-subsets.pe MyFont.ttf SubsettedGlyphs.ttf.subset
+# This will create NewMyFont.ttf.
+
+Open($1)
+MergeFonts($2)
+Generate("New" + $1:r + ".ttf")

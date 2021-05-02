@@ -1,0 +1,16 @@
+# Directory Index
+DirectoryIndex index.php index.htm index.htnl
+#
+# Error redirects - require the MX-Publisher ErrorDocs module to be installed
+# Uncomment below, and consult the MX-Publisher ErrorDocs module documentation
+#
+ErrorDocument 400 /index.php?page=x&errno=400&errlog=yes
+ErrorDocument 401 /index.php?page=x&errno=401&errlog=yes
+ErrorDocument 402 /index.php?page=x&errno=402&errlog=yes
+ErrorDocument 403 /index.php?page=x&errno=403&errlog=yes
+ErrorDocument 404 /index.php?page=x&errno=404&errlog=yes
+ErrorDocument 500 /index.php?page=x&errno=500&errlog=yes
+ErrorDocument 501 /index.php?page=x&errno=501&errlog=yes
+ErrorDocument 502 /index.php?page=x&errno=502&errlog=yes
+ErrorDocument 503 /index.php?page=x&errno=503&errlog=yes
+ErrorDocument 504 /index.php?page=x&errno=504&errlog=yes

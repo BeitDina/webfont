@@ -73,6 +73,7 @@ class Woff2Converter implements ConverterInterface
 		$output = array([]);
         $outFile = $this->getWOFFPath($input);
 		$inpFile = $input->getRealPath();
+		$inpFileExt = substr(strrchr($inpFile, '.'), 1);
  		$return = 0;
 		
 		//Fix an error with output file on some Windows versions of sfnt2woff 
@@ -92,7 +93,6 @@ class Woff2Converter implements ConverterInterface
 			if (!copy($old_name, $new_name))
 			{
 				print(PHP_OS . ' exception ('.@is_writable($new_name).'): The converter did not recovered the woff file via rename().' . ' line: ' . __LINE__ .' file: '. __FILE__);
-				
 			}
 			
 			//copy file permissions
@@ -105,10 +105,42 @@ class Woff2Converter implements ConverterInterface
 			{
 				print(PHP_OS . ' exception ('.@is_writable($new_name).'): The converter recovered the '.basename($new_name).' woff file via rename().');
 			}			
-        }	
-        
-		exec($this->woffCompress . ' "' . $inpFile . '"', $output, $return);
-
+        }		
+ 		
+		//If is not a compatible font
+		if (str_replace(array('.SVG', '.svg'), '.ttf', $inpFile) !== $inpFile)
+		{			
+			$inpFile = str_replace(array('.SVG', '.svg'), '.ttf', $inpFile);			
+			
+			print '(svg to woff2) The converter detected other mime file type and/or extension incompatible with woff2_compress ' . $inpFile . ' and is OK.';
+			exec($this->woffCompress . ' "' . $inpFile . '"', $output, $return);
+		}
+		elseif (str_replace(array('.WOFF2', '.woff2'), '.ttf', $inpFile) !== $inpFile)
+		{			
+			$inpFile = str_replace(array('.WOFF2', '.woff2'), '.ttf', $inpFile);			
+			
+			print '(woff2 to woff2) The converter detected other mime file type and/or extension compatible with woff2_compress or woff2_decompress ' . $inpFile . ' and is OK.';
+			exec($this->woffCompress . ' "'. $inpFile .'"', $output, $return);	
+		}
+		elseif (str_replace(array('.WOFF', '.woff'), '.ttf', $inpFile) !== $inpFile)
+		{			
+			$inpFile = str_replace(array('.WOFF', '.woff'), '.ttf', $inpFile);			
+			
+			print '(woff to woff2) The converter detected other mime file type and/or extension compatible with woff2_compress ' . $inpFile . ' and is OK.';
+			exec($this->woffCompress . ' "'. $inpFile .'"', $output, $return);	
+		}
+		elseif (str_replace(array('.EOT', '.eot'), '.ttf', $inpFile) !== $inpFile)
+		{			
+			$inpFile = str_replace(array('.EOT', '.eot'), '.ttf', $inpFile);			
+			
+			print '(eot to woff2) The converter detected other mime file type and/or extension compatible with woff2_compress ' . $inpFile . ' and is OK.';
+			exec($this->woffCompress . ' "'. $inpFile .'"', $output, $return);	
+		}		
+		else
+		{
+			exec($this->woffCompress . ' "' . $inpFile . '"', $output, $return);
+		}
+		
         if (0 !== $return) 
 		{
             throw new \RuntimeException($this->woffCompress.' "'.$input->getRealPath().'"' .

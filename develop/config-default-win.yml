@@ -1,13 +1,13 @@
 converters:
-    ttf:
-        path: /usr/bin/fontforge.exe
-        class: WebfontGenerator\Converters\TrueTypeConverter
     sfd:
         path: /usr/bin/fontforge.exe
         class: WebfontGenerator\Converters\SplitFontDBConverter
     afm:
         path: /usr/bin/fontforge.exe
         class: WebfontGenerator\Converters\FontMetricsConverter
+    ttf:
+        path: /usr/bin/fontforge.exe
+        class: WebfontGenerator\Converters\TrueTypeConverter
     svg:
         path: /usr/bin/fontforge.exe
         class: WebfontGenerator\Converters\ScalableVectorGraphicsConverter
@@ -17,9 +17,6 @@ converters:
     woff2:
         path: /usr/bin/woff2_compress.exe
         class: WebfontGenerator\Converters\Woff2Converter
-    otf:
-        path: /usr/bin/fontforge.exe
-        class: WebfontGenerator\Converters\OpenTypeConverter
     eot:
         path: /usr/bin/ttf2eot.exe
         class: WebfontGenerator\Converters\EmbedOpenTypeConverter

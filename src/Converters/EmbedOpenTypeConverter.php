@@ -41,8 +41,8 @@ class EmbedOpenTypeConverter implements ConverterInterface
     public function __construct($binPath)
     {
 		$this->driver = new Driver();
-		if (('\\' === \DIRECTORY_SEPARATOR) && (PHP_OS !== 'Linux')) 
-		{	
+		if (('\\' === \DIRECTORY_SEPARATOR) && (PHP_OS !== 'Linux'))
+		{
 			//If we use usr/bin for ttf2eot on Windows
 			if ($this->driver->file_exists($binPath))
 			{
@@ -52,7 +52,7 @@ class EmbedOpenTypeConverter implements ConverterInterface
 			{
 				//Rename config-default-win.yml to config.yml
 				$this->ttf2eot = $binPath . '.exe';
-			}		
+			}
 		}
 		else
 		{
@@ -63,29 +63,52 @@ class EmbedOpenTypeConverter implements ConverterInterface
 
     public function convert(File $input)
     {
-        if (!$this->driver->file_exists($this->ttf2eot)) 
+        if (!$this->driver->file_exists($this->ttf2eot))
 		{
             throw new \RuntimeException($this->ttf2eot . ' (ttf2eot) could not be found.');
         }
-		
+
         $output = array([]);
         $outFile = $this->getEOTPath($input);
 		$inpFile = $input->getRealPath();
+		$inpFileExt = substr(strrchr($inpFile, '.'), 1);
  		$return = 0;
 		
-        exec(
-            $this->ttf2eot . ' "'.$input->getRealPath(). '" > ' . $outFile .'',
-            $output,
-            $return
-        );
-
-        $outputHuman = implode('<br/>', $output);
-
-        if (0 !== $return) 
+		//MB_CASE_LOWER, MB_CASE_UPPER, MB_CASE_TITLE
+		if (ucwords($inpFileExt) === $inpFileExt)
 		{
-            throw new \RuntimeException('ttf2eot could not convert '.$input->getBasename().' to EOT format.' . $outputHuman);
-        } 
-		else 
+			$fntFileEx = 'TTF';
+        }
+		else		
+		{
+			$fntFileEx = 'ttf';
+        }
+		
+ 		//If is not a compatible font
+		if ((str_replace(array('.TTF', '.ttf'), '.TTF', $inpFile) == $inpFile) || (str_replace(array('.TTF', '.ttf'), '.ttf', $inpFile) == $inpFile) || (str_replace(array('.OTF', '.otf'), '.otf', $inpFile) == $inpFile) || (str_replace(array('.OTF', '.otf'), '.OTF', $inpFile) == $inpFile))
+		{
+			$inpFile = str_replace(array(ucwords($inpFileExt), $inpFileExt), $fntFileEx, $inpFile);
+			
+			print 'The converter detected other mime file type and/or extension incompatible with ttf2eot ' . $inpFile . ' and is OK.';
+			exec($this->ttf2eot . ' "' . $inpFile . '" > ' . $outFile .'',
+				$output,
+				$return
+			);
+		}
+		else
+		{
+			exec($this->ttf2eot . ' "' . $input->getRealPath() . '" > ' . $outFile .'',
+				$output,
+				$return
+			);
+		}
+
+        if (0 !== $return)
+		{
+            throw new \RuntimeException($this->ttf2eot . ' "'.$input->getRealPath() . '"' .
+           ' ' . ' could not convert ' . $inpFile .' to EOT format.');
+		}
+		else
 		{
             return new File($outFile);
         }

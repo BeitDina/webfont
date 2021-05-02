@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2015, Ambroise Maupate
+ * Copyright © 2021, Florin-Ciprian Bodin
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,7 +21,7 @@
  * IN THE SOFTWARE.
  *
  * @file TrueTypeConverter.php
- * @author Ambroise Maupate
+ * @author Ambroise Maupate & FlorinCB aka orynider
  */
 namespace WebfontGenerator\Converters;
 
@@ -30,11 +30,11 @@ use WebfontGenerator\Converters\Driver;
 use Symfony\Component\HttpFoundation\File\File;
 
 /**
- * Class TrueTypeConverter
+ * Class OpenTypeConverter
  *
  * @package WebfontGenerator\Converters
  */
-class TrueTypeConverter implements ConverterInterface
+class OpenTypeConverter implements ConverterInterface
 {
     protected $fontforge = null;
 
@@ -75,7 +75,7 @@ class TrueTypeConverter implements ConverterInterface
 		$inpFileExt = substr(strrchr($inpFile, '.'), 1);
 		
 		$return = 0;
-		exec($this->fontforge . ' -script '.ROOT.'/assets/scripts/tottf.pe "'.$inpFile.'"', $output, $return);
+		exec($this->fontforge . ' -script '.ROOT.'/assets/scripts/tootf.pe "'.$inpFile.'"', $output, $return);
 		
 		if (0 !== $return) 
 		{
@@ -142,7 +142,7 @@ class TrueTypeConverter implements ConverterInterface
 			else
 			{
 				throw new \RuntimeException('Fontforge could not convert '.$input->getBasename().' from ' . $inpFileExt . ' to TrueType format on ' . PHP_OS . 
-				'. Try: ' . $this->fontforge . ' -script '.ROOT.'/assets/scripts/tottf.pe "'.$inpFile.'"');
+				'. Try: ' . $this->fontforge . ' -script '.ROOT.'/assets/scripts/tootf.pe "'.$inpFile.'"');
 			} 
         }
 		else 
@@ -151,11 +151,11 @@ class TrueTypeConverter implements ConverterInterface
         }
 		
 		/*
-		exec($this->fontforge . ' -script '.ROOT.'/assets/scripts/tottf.pe "'.$outFile.'"', $output, $return);
+		exec($this->fontforge . ' -script '.ROOT.'/assets/scripts/tootf.pe "'.$outFile.'"', $output, $return);
 		if (0 !== $return) 
 		{
 			throw new \RuntimeException('Fontforge could not convert '.$input->getBasename().' to TrueType format on ' . PHP_OS . 
-			'. Try: ' . $this->fontforge . ' -script '.ROOT.'/assets/scripts/tottf.pe "'.$inpFile.'"');
+			'. Try: ' . $this->fontforge . ' -script '.ROOT.'/assets/scripts/tootf.pe "'.$inpFile.'"');
 		} 
 		else 
 		{
@@ -168,6 +168,6 @@ class TrueTypeConverter implements ConverterInterface
     {
         $basename = StringHandler::slugify($input->getBasename('.'.$input->getExtension()));
 
-        return $input->getPath().DIRECTORY_SEPARATOR.$basename.'.ttf';
+        return $input->getPath().DIRECTORY_SEPARATOR.$basename.'.otf';
     }
 }

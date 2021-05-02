@@ -1,5 +1,8 @@
 #!/usr/bin/fontforge
 
 Open($1)
+SelectAll()
 ScaleToEm(1024)
+CorrectDirection()
+RoundToInt()
 Generate($1:r + ".svg")
