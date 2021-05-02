@@ -1,5 +1,5 @@
 # webfont-generator
-**Subset and convert one or many OTF/TTF files in EOT, SVG, WOFF and WOFF2.**
+**Converts one OTF/TTF, SVG, SFD, WOFF and WOFF2 and makes a webfont pack.**
 
 Built thanks to:
 
