@@ -73,6 +73,7 @@ class WoffConverter implements ConverterInterface
 		$outFile = str_replace(array('.TTF.woff', '.ttf.woff', '.OTF.woff', '.otf.woff'), '.woff', $this->getWOFFPath($input));
 		$inpFile = $input->getRealPath();
 		$inpFileExt = substr(strrchr($inpFile, '.'), 1);
+		$outFileExt = substr(strrchr($outFile, '.'), 1);
 		$compressor = $this->woffCompress;
 		$return = 0;
 		
@@ -80,24 +81,47 @@ class WoffConverter implements ConverterInterface
 		if (ucwords($inpFileExt) === $inpFileExt)
 		{
 			$outFile = str_replace(array('.woff', '.woff2'), '.TTF.woff', $this->getWOFFPath($input));
-			print 'The converter made append to file extension for sfnt2woff -o ' . $outFile . ' and is OK.';
+			print '(caps upper case extension) The converter made append to file extension for sfnt2woff -o ' . $outFile . ' and is OK.';
         }
 		
 		//If is not a compatible font
-		if (in_array($inpFileExt, array('.svg', '.SVG')))
+		if (str_replace(array('.SVG', '.svg'), '.ttf', $inpFile) !== $inpFile)
+		{			
+			$inpFile = str_replace(array('.SVG', '.svg'), '.ttf', $inpFile);			
+			//$compressor = str_replace('sfnt2woff', 'svg2woff', $input->woffCompress);
+			print '(svg to woff) The converter detected other mime file type and/or extension incompatible with sfnt2woff ' . $inpFile . ' and is OK.';
+			exec($compressor . ' "'. $inpFile .'"', $output, $return);
+		}
+		elseif (str_replace(array('.WOFF2', '.woff2'), '.ttf', $inpFile) !== $inpFile)
+		{			
+			$inpFile = str_replace(array('.WOFF2', '.woff2'), '.ttf', $inpFile);			
+			//$compressor = str_replace('sfnt2woff', 'svg2woff', $input->woffCompress);
+			print '(woff to woff) The converter detected other mime file type and/or extension incompatible with sfnt2woff ' . $inpFile . ' and is OK.';
+			exec($compressor . ' "'. $inpFile .'"', $output, $return);
+		}
+		elseif (str_replace(array('.WOFF', '.woff'), '.ttf', $inpFile) !== $inpFile)
+		{			
+			$inpFile = str_replace(array('.WOFF', '.woff'), '.ttf', $inpFile);			
+			//$compressor = str_replace('sfnt2woff', 'svg2woff', $input->woffCompress);
+			print '(woff to woff) The converter detected other mime file type and/or extension incompatible with sfnt2woff ' . $inpFile . ' and is OK.';
+			exec($compressor . ' "'. $inpFile .'"', $output, $return);
+		}
+		elseif (str_replace(array('.EOT', '.eot'), '.ttf', $inpFile) !== $inpFile)
+		{			
+			$inpFile = str_replace(array('.EOT', '.eot'), '.ttf', $inpFile);			
+			//$compressor = str_replace('sfnt2woff', 'svg2woff', $input->woffCompress);
+			print '(eot to woff) The converter detected other mime file type and/or extension incompatible with sfnt2woff ' . $inpFile . ' and is OK.';
+			exec($compressor . ' "'. $inpFile .'"', $output, $return);
+		}		
+		else
 		{
-			
-			$fntFile = str_replace(array('.SVG', '.svg'), '.ttf', $inpFile);
-			
-			$compressor = str_replace('sfnt2woff', 'svg2woff', $input->woffCompress);
-			print 'The converter detected other mime file type and/or extension incompatible with sfnt2woff -o ' . $outFile . ' and is OK.';
-        }
+			exec($compressor . ' "'. $inpFile .'"', $output, $return);
+		}
 		//die(print_r(array($compressor . ' "'. $inpFile .'"', $output, $return), true));		
-		exec($compressor . ' "'. $inpFile .'"', $output, $return);
-		
+				
         if (0 !== $return) 
 		{
-            throw new \RuntimeException('sfnt2woff could not convert '.$input->getBasename().' to Woff format.');
+            throw new \RuntimeException('CMD Line: ' . $compressor  . ' "'. $inpFile .'" '. 'could not convert '. $inpFileExt . ' file ' . $input->getBasename().' to Woff format.');
         } 
 		else 
 		{

@@ -70,7 +70,19 @@ class ScalableVectorGraphicsConverter implements ConverterInterface
         }
 		
         $output = array([]);
+		$inpFile = $input->getRealPath();
+		$inpFileExt = substr(strrchr($inpFile, '.'), 1);
 		$return = 0;
+		
+		//MB_CASE_LOWER, MB_CASE_UPPER, MB_CASE_TITLE
+		if (ucwords($inpFileExt) === $inpFileExt)
+		{
+			$fntFileEx = 'TTF';
+        }
+		else		
+		{
+			$fntFileEx = 'ttf';
+        }
 		
         if (!$this->driver->file_exists($outFile = $this->getSVGPath($input))) 
 		{
@@ -81,18 +93,63 @@ class ScalableVectorGraphicsConverter implements ConverterInterface
 		if (!$this->driver->file_exists($inpFile = $input->getRealPath())) 
 		{
 			$inpFile = str_replace(array('.woff', '.OTF.woff'), '.TTF.woff', $input->getRealPath());
+			//$inpFile = str_replace(array('_', '-'), '-', $inpFile);
 			//print 'ATM exists not -i ' . $inpFile . ' ?';			
         } 
 		//print '/usr/bin/fontforge.exe -script C:\Wamp\www\webfont/assets/scripts/tosvg.pe ' . $inpFile . ' ';
-        exec(
-            $this->fontforge.' -script '. str_replace('/\/', '/', ROOT) .'/assets/scripts/tosvg.pe "' . $inpFile . '"',
-            $output,
-            $return
-        );
-
+ 		//If is not a compatible font
+		if (str_replace(array('.SVG', '.svg'), '.ttf', $inpFile) !== $inpFile)
+		{			
+			$inpFile = str_replace(array('.SVG', '.svg'), '.ttf', $inpFile);
+			//$outFile = str_replace(array('.svg', '.SVG'), '.TTF.svg', $this->getSVGPath($input));			
+			print '(svg) The converter detected other mime file type and/or extension ' . $inpFileExt . ' compatible with fontforge -script /assets/scripts/tosvg.pe ' . $inpFile . ' and is OK.';
+			exec($this->fontforge . ' -script '. str_replace('/\/', '/', ROOT) .'/assets/scripts/tosvg.pe "' . $inpFile . '"',
+				$output,
+				$return
+			);
+		}
+		elseif (str_replace(array('.WOFF2', '.woff2'), '.ttf', $inpFile) !== $inpFile)
+		{			
+			$inpFile = str_replace(array('.WOFF2', '.woff2'), '.' . $fntFileEx, $inpFile);
+			//$compressor = str_replace('sfnt2woff', 'svg2woff', $input->woffCompress);
+			//Windows Branch ported from https://github.com/BeitDina/webfont-generator/tree/windows
+			print '(woff2) The converter detected other mime file type and/or extension incompatible with fontforge ' . $inpFile . ' and is OK.';
+			exec($this->fontforge . ' -script '. str_replace('/\/', '/', ROOT) .'/assets/scripts/tosvg.pe "' . $inpFile . '"',
+				$output,
+				$return
+			);
+		}	
+		elseif (str_replace(array('.WOFF', '.woff'), '.ttf', $inpFile) !== $inpFile)
+		{			
+			$inpFile = str_replace(array('.WOFF', '.woff'), '.ttf', $inpFile);			
+			//$compressor = str_replace('sfnt2woff', 'svg2woff', $input->woffCompress);
+			print '(woff) The converter detected other mime file type and/or extension compatible with fontforge ' . $inpFile . ' and is OK.';
+			exec($this->fontforge . ' -script '. str_replace('/\/', '/', ROOT) .'/assets/scripts/tosvg.pe "' . $inpFile . '"',
+				$output,
+				$return
+			);	
+		}
+		elseif (str_replace(array('.EOT', '.eot'), '.ttf', $inpFile) !== $inpFile)
+		{			
+			$inpFile = str_replace(array('.EOT', '.eot'), '.ttf', $inpFile);			
+			//$compressor = str_replace('sfnt2woff', 'svg2woff', $input->woffCompress);
+			print '(eot) The converter detected other mime file type and/or extension compatible with fontforge ' . $inpFile . ' and is OK.';
+			exec($this->fontforge . ' -script '. str_replace('/\/', '/', ROOT) .'/assets/scripts/tosvg.pe "' . $inpFile . '"',
+				$output,
+				$return
+			);	
+		}
+		else
+		{
+			exec($this->fontforge . ' -script '. str_replace('/\/', '/', ROOT) .'/assets/scripts/tosvg.pe "' . $inpFile . '"',
+				$output,
+				$return
+			);
+		}
+		
         if (0 !== $return) 
 		{
-            throw new \RuntimeException('Fontforge could not convert '.$input->getBasename().' to SVG format.');
+            throw new \RuntimeException('Fontforge could not convert '.$input->getBasename(). ' ' . $inpFileExt . ' file to SVG format. CMD Line: ' . $this->fontforge . ' -script '. str_replace('/\/', '/', ROOT) .'/assets/scripts/tosvg.pe "' . $inpFile . '"');
         } 
 		else 
 		{
