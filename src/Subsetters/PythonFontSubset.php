@@ -30,7 +30,32 @@ class PythonFontSubset
 		// …
         'latin_extended_additional' => 'U+1E00-1EFF',
         'greek_extended' => 'U+1F00-1FFF',
-		
+
+		// … African Scripts
+        'adlam' => 'U+1E900', 
+        'bamum' => 'U+A6A0', 
+        'bamum_supplement' => 'U+16800', 
+        'bassa_vah' => 'U+16AD0', 
+        'coptic' => 'U+2C80', 
+        'coptic_in_greek_block ' => 'U+0370', 
+        'coptic_epact_numbers ' => 'U+102E0', 
+        'egyptian_hieroglyphs ' => 'U+13000', 
+        'egyptian_hieroglyph_format_controls ' => 'U+13430', 
+        'ethiopic ' => 'U+1200', 
+        'ethiopic_supplement' => 'U+1380', 
+        'ethiopic_extended ' => 'U+2D80', 
+        'ethiopic_extended ' => 'U+AB00', 
+        'medefaidrin ' => 'U+16E40', 
+        'mende_kikakui ' => 'U+1E800', 
+
+		// … Meroitic</p>
+        'meroitic_cursive' => 'U+109A0', 
+        'meroitic_hieroglyphs' => 'U+10980', 
+        'ko ' => 'U+07C0', 
+        'osmanya ' => 'U+10480', 
+        'tifinagh ' => 'U+2D30', 
+        'vai ' => 'U+A500', 
+ 
 		//Middle Eastern Scripts - Israely Glyph Pages
         'hebrew' => 'U+0590-05FF',
 		'anatolian_hieroglyphs' => 'U+14400-1467F',                  
